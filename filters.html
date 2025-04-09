@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- FontAwesome -->
+    <script defer src="fa/css/all.min.css"></script>
+
+    <!-- Montserrat -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Montserrat';
+        }
+    </style>
+
+    <title>Testeando Vue claro que si</title>
+</head>
+<body style="background-color: ghostwhite">
+    <div id="app" class="container p-4 my-10 mx-auto">
+
+        <input type="checkbox" name="adult" id="" v-model="adult">
+        <label for="" class="ms-6 mb-6">Incluir resultados para adultos {{adult}}</label>
+        <br>
+
+        <input type="text" name="search" id="search-input" class="border border-gray-200 rounded p-2 focus:ring focus:ring-blue-300 focus:outline-none" v-model="search">
+        <button @click="searchQuery" class="ms-10 px-3 py-2 rounded bg-blue-500 text-white font-bold uppercase">search</button>
+
+
+        <div class="grid grid-cols-3 gap-16 mt-10">
+            <span class="text-xl font-bold" v-for="item in res">
+                {{item.title}} ({{item.release_date.slice(0,4)}})
+                <i v-show="item.adult" class="text-red-500 fa-solid fa-triangle-exclamation"></i>
+            </span>
+        </div>
+
+    
+    </div>
+
+    <script defer src="fa/js/all.min.js"></script>
+
+    <script>
+    const { createApp } = Vue
+
+    createApp({
+        data() {
+            return {
+                res: [],
+                search: '',
+                adult: false
+            }
+        },
+        methods: {
+            searchQuery(){
+                var config = {
+                    method: 'get',
+                    headers: { 
+                        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4ZGVmNjQ4ZWQ5YTFhNDY5YjY5MzZlMDNhMjI5Yzg5NiIsInN1YiI6IjYzMWUzM2Q5MGQyZjUzMDA3YzZiZDc4OSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.f6J0Wq5Np6EIroU5XVy7GzJlA1e8jyBXTFuAfr2hGf8'
+                    }
+                };
+                if(this.search){
+                    config.url = 'https://api.themoviedb.org/3/search/movie?query='+this.search+'&include_adult='+this.adult+'&language=en-US&page=1'
+                }
+                else{
+                    config.url = 'https://api.themoviedb.org/3/trending/movie/day?language=en-US'
+                }
+                axios(config)
+                .then((response) => {
+                    this.res = response.data.results;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            }
+        },
+        watch:{
+            search(){
+                this.searchQuery();
+            },
+            adult(){
+                this.searchQuery();
+            }
+        },
+        mounted() {
+            this.searchQuery();
+        }
+    }).mount('#app')
+    </script>
+</body>
+</html>
