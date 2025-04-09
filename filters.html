@@ -27,18 +27,24 @@
     <div id="app" class="container p-4 my-10 mx-auto">
 
         <input type="checkbox" name="adult" id="" v-model="adult">
-        <label for="" class="ms-6 mb-6">Incluir resultados para adultos {{adult}}</label>
+        <label for="" class="ms-6 mb-6">Incluir resultados para adultos</label>
         <br>
 
         <input type="text" name="search" id="search-input" class="border border-gray-200 rounded p-2 focus:ring focus:ring-blue-300 focus:outline-none" v-model="search">
         <button @click="searchQuery" class="ms-10 px-3 py-2 rounded bg-blue-500 text-white font-bold uppercase">search</button>
 
 
-        <div class="grid grid-cols-3 gap-16 mt-10">
-            <span class="text-xl font-bold" v-for="item in res">
-                {{item.title}} ({{item.release_date.slice(0,4)}})
-                <i v-show="item.adult" class="text-red-500 fa-solid fa-triangle-exclamation"></i>
-            </span>
+        <div class="grid grid-cols-5 gap-16 mt-10">
+            <div v-for="item in res" class="border border-gray-200 shadow-xl p-4 rounded-xl">
+                <img v-bind:src="'https://image.tmdb.org/t/p/w600_and_h900_bestv2'+item.poster_path" alt="" class="w-full mb-4">
+                <h2 class="h-28 text-xl font-bold mb-4" >
+                    {{item.title}} ({{item.release_date.slice(0,4)}}) {{item.adult}}
+                    <i v-show="item.adult" class="text-red-500 fa-solid fa-triangle-exclamation"></i>
+                </h2>
+                <p class="line-clamp-4 text-gray-600">
+                    {{item.overview}}
+                </p>
+            </div>
         </div>
 
     
